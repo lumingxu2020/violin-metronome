@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#11100f">
+  <meta name="description" content="为小提琴练习设计的节拍器，支持多种音效、细分节奏、弓法提示和渐进提速。">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <title>弦拍 · 小提琴节拍器</title>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">𝄞</span><span>弦拍</span></div>
+      <div class="top-actions">
+        <button class="icon-button" id="soundToggle" aria-label="静音" title="静音">◖</button>
+        <button class="icon-button" id="themeToggle" aria-label="切换明暗模式" title="切换明暗模式">◐</button>
+      </div>
+    </header>
+
+    <section class="stage" aria-label="节拍器主控制区">
+      <div class="status-row">
+        <span class="status-pill" id="meterStatus">4/4 · 四分音符</span>
+        <span class="status-pill bow-status" id="bowStatus">弓法：下弓</span>
+      </div>
+
+      <div class="beat-orbit" id="beatOrbit" aria-live="polite">
+        <div class="bow-symbol" id="bowSymbol" aria-hidden="true">▣</div>
+        <div class="beat-count" id="beatCount">1</div>
+        <div class="beat-label">准备</div>
+      </div>
+
+      <div class="bpm-control">
+        <button class="step-button" id="minusBpm" aria-label="速度减一">−</button>
+        <label class="bpm-readout">
+          <input id="bpmInput" type="number" min="30" max="240" value="80" inputmode="numeric" aria-label="每分钟拍数">
+          <span>BPM</span>
+        </label>
+        <button class="step-button" id="plusBpm" aria-label="速度加一">＋</button>
+      </div>
+      <input class="bpm-slider" id="bpmSlider" type="range" min="30" max="240" value="80" aria-label="调节速度">
+
+      <div class="transport">
+        <button class="secondary-button" id="tapTempo">轻点测速</button>
+        <button class="play-button" id="playButton" aria-label="开始节拍器"><span id="playIcon">▶</span></button>
+        <button class="secondary-button" id="resetButton">复位</button>
+      </div>
+    </section>
+
+    <section class="control-grid">
+      <article class="panel">
+        <div class="panel-heading"><h2>节拍</h2><span id="measureCount">第 0 小节</span></div>
+        <div class="segmented" id="meterChoices" aria-label="拍号">
+          <button data-value="2">2/4</button><button data-value="3">3/4</button><button class="active" data-value="4">4/4</button><button data-value="6">6/8</button>
+        </div>
+        <label class="field-label" for="subdivision">节奏细分</label>
+        <select id="subdivision">
+          <option value="1">四分音符</option><option value="2">八分音符</option><option value="3">三连音</option><option value="4">十六分音符</option>
+        </select>
+        <label class="switch-row"><span>首拍重音</span><input id="accentToggle" type="checkbox" checked><i></i></label>
+        <label class="switch-row"><span>弓法提示</span><input id="bowToggle" type="checkbox" checked><i></i></label>
+      </article>
+
+      <article class="panel sound-panel">
+        <div class="panel-heading"><h2>音色</h2><button class="text-button" id="previewSound">试听</button></div>
+        <div class="sound-tabs" id="soundTabs">
+          <button class="active" data-category="all">全部</button><button data-category="classic">传统</button><button data-category="drum">鼓组</button><button data-category="orchestra">管弦</button><button data-category="soft">柔和</button>
+        </div>
+        <div class="sound-list" id="soundList" role="listbox" aria-label="选择节拍音效"></div>
+        <label class="volume-row"><span>音量</span><input id="volumeSlider" type="range" min="0" max="100" value="72"><output id="volumeValue">72%</output></label>
+      </article>
+
+      <article class="panel training-panel">
+        <div class="panel-heading"><h2>渐进提速</h2><label class="mini-switch"><input id="trainingToggle" type="checkbox"><i></i></label></div>
+        <div class="training-fields">
+          <label>目标 BPM<input id="targetBpm" type="number" min="30" max="240" value="120"></label>
+          <label>每次增加<input id="stepBpm" type="number" min="1" max="20" value="2"></label>
+          <label>间隔小节<input id="intervalMeasures" type="number" min="1" max="32" value="4"></label>
+        </div>
+        <div class="progress-track"><div id="trainingProgress"></div></div>
+        <p id="trainingText">开启后，每 4 小节加速 2 BPM，直至 120 BPM。</p>
+      </article>
+
+      <article class="panel presets-panel">
+        <div class="panel-heading"><h2>练习预设</h2><button class="text-button" id="savePreset">保存当前</button></div>
+        <div class="preset-list" id="presetList"></div>
+      </article>
+    </section>
+  </main>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+services:
+  metronome:
+    build: .
+    container_name: violin-metronome
+    restart: unless-stopped
+    ports:
+      - "8780:80"
